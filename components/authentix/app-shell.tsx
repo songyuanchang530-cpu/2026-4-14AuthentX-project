@@ -8,6 +8,7 @@ import { useTheme } from "./theme-provider"
 import { useDeviceType } from "@/hooks/use-mobile"
 import { MobileHeader } from "./mobile-header"
 import { MobileBottomNav } from "./mobile-bottom-nav"
+import { AnalyzeTypeSelector } from "./analyze-type-selector"
 import {
   Home,
   Image,
@@ -88,6 +89,9 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
     }
   }, [isAIAssistantActive, pathname, router])
 
+  // Check if we're on an analyze page
+  const isAnalyzePage = pathname === "/" || pathname === "/image-detect" || pathname === "/audio-detect" || pathname === "/text-detect"
+
   // Mobile Layout
   if (isMobile) {
     return (
@@ -96,7 +100,9 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
         <MobileHeader pageTitle={pageTitle} activeItem={activeItem} />
 
         {/* Page Content with safe area padding */}
-        <main className="flex flex-1 flex-col px-4 pb-20 pt-4">
+        <main className="flex flex-1 flex-col px-4 pb-24 pt-4">
+          {/* Show media type selector on analyze pages */}
+          {isAnalyzePage && <AnalyzeTypeSelector />}
           {children}
         </main>
 

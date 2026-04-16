@@ -40,22 +40,24 @@ export function AudioDetectionViewer() {
   const progressPercent = (currentTime / totalTime) * 100
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      {/* Waveform Card - Fixed height to match Upload zone on left */}
-      <div className="relative flex h-[320px] flex-col overflow-hidden rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50">
+    <div className="flex h-full flex-col gap-4 md:gap-6">
+      {/* Waveform Card - Responsive height */}
+      <div className="relative flex h-[260px] flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 md:h-[320px] md:rounded-3xl md:p-6 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
         {/* Waveform Title */}
-        <div className="mb-4 flex items-center justify-between">
-          <h4 className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            Audio Waveform Analysis
+        <div className="mb-3 flex items-center justify-between md:mb-4">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            Audio Waveform
           </h4>
-          <div className="flex items-center gap-4 text-xs text-slate-500">
+          <div className="flex items-center gap-3 text-[10px] text-slate-500 md:gap-4 md:text-xs">
             <span className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-red-500" />
-              Manipulated
+              <span className="size-2.5 rounded-full bg-red-500 md:size-2" />
+              <span className="hidden md:inline">Manipulated</span>
+              <span className="md:hidden">AI</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-blue-500" />
-              Authentic
+              <span className="size-2.5 rounded-full bg-blue-500 md:size-2" />
+              <span className="hidden md:inline">Authentic</span>
+              <span className="md:hidden">Real</span>
             </span>
           </div>
         </div>
@@ -136,30 +138,30 @@ export function AudioDetectionViewer() {
           </div>
         </div>
 
-        {/* Playback Controls */}
-        <div className="mt-4 flex items-center gap-4">
+        {/* Playback Controls - Touch friendly, larger on mobile */}
+        <div className="mt-3 flex items-center gap-3 md:mt-4 md:gap-4">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition-colors hover:bg-slate-200"
+            className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#0082FD] to-[#A459B5] text-white shadow-lg shadow-[#0082FD]/25 transition-all active:scale-95 md:size-12 md:bg-slate-100 md:text-slate-700 md:shadow-none md:hover:bg-slate-200"
           >
             {isPlaying ? (
-              <Pause className="size-5" />
+              <Pause className="size-6 md:size-5" />
             ) : (
-              <Play className="ml-0.5 size-5" />
+              <Play className="ml-0.5 size-6 md:size-5" />
             )}
           </button>
 
-          <div className="flex items-center gap-3 text-sm text-slate-500">
-            <span className="font-mono">{formatTime(currentTime)}</span>
-            <span>/</span>
-            <span className="font-mono">{formatTime(totalTime)}</span>
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-600 md:gap-3 md:text-sm md:font-normal md:text-slate-500 dark:text-slate-400">
+            <span className="font-mono text-base md:text-sm">{formatTime(currentTime)}</span>
+            <span className="text-slate-400">/</span>
+            <span className="font-mono text-base md:text-sm">{formatTime(totalTime)}</span>
           </div>
 
-          {/* Progress Track */}
-          <div className="relative flex-1">
-            <div className="h-1 w-full overflow-hidden rounded-full bg-slate-200">
+          {/* Progress Track - Larger touch target on mobile */}
+          <div className="relative flex-1 py-2">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 md:h-1 dark:bg-slate-700">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                className="h-full bg-gradient-to-r from-[#0082FD] to-[#A459B5]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -169,72 +171,75 @@ export function AudioDetectionViewer() {
               max={totalTime}
               value={currentTime}
               onChange={(e) => setCurrentTime(Number(e.target.value))}
-              className="absolute inset-0 h-1 w-full cursor-pointer opacity-0"
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
             />
           </div>
         </div>
       </div>
 
-      {/* Acoustic Fingerprint & Metadata Card - Matches Scan Options on left */}
-      <div className="rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50">
-        <div className="mb-4 flex items-center justify-between">
-          <h4 className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            Acoustic Fingerprint & Metadata
+      {/* Acoustic Fingerprint & Metadata Card - Vertical stack on mobile */}
+      <div className="rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 md:rounded-3xl md:p-6 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
+        <div className="mb-3 flex items-center justify-between md:mb-4">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+            Acoustic Metadata
           </h4>
-          <span className="text-[10px] text-slate-400">Powered by White Ocean Engine</span>
+          <span className="text-[10px] text-slate-400">White Ocean Engine</span>
         </div>
         
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-indigo-50">
-              <Radio className="size-5 text-indigo-500" />
+        {/* Vertical stack on mobile, horizontal on desktop */}
+        <div className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4">
+          <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-3 md:bg-transparent md:p-0 dark:bg-slate-800/50 md:dark:bg-transparent">
+            <div className="flex size-12 items-center justify-center rounded-xl bg-indigo-100 md:size-10 md:bg-indigo-50 dark:bg-indigo-900/30">
+              <Radio className="size-6 text-indigo-500 md:size-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">Bitrate</p>
-              <p className="text-sm font-semibold text-slate-700">320 kbps</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-400 md:text-xs">Bitrate</p>
+              <p className="text-base font-bold text-slate-700 md:text-sm md:font-semibold dark:text-white">320 kbps</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-purple-50">
-              <Waves className="size-5 text-purple-500" />
+          <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-3 md:bg-transparent md:p-0 dark:bg-slate-800/50 md:dark:bg-transparent">
+            <div className="flex size-12 items-center justify-center rounded-xl bg-purple-100 md:size-10 md:bg-purple-50 dark:bg-purple-900/30">
+              <Waves className="size-6 text-purple-500 md:size-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">Frequency</p>
-              <p className="text-sm font-semibold text-slate-700">20Hz - 18kHz</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-400 md:text-xs">Frequency</p>
+              <p className="text-base font-bold text-slate-700 md:text-sm md:font-semibold dark:text-white">20Hz - 18kHz</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-amber-50">
-              <Activity className="size-5 text-amber-500" />
+          <div className="flex items-center gap-4 rounded-xl bg-amber-50 p-3 md:bg-transparent md:p-0 dark:bg-amber-900/20 md:dark:bg-transparent">
+            <div className="flex size-12 items-center justify-center rounded-xl bg-amber-100 md:size-10 md:bg-amber-50 dark:bg-amber-900/30">
+              <Activity className="size-6 text-amber-500 md:size-5" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">Synthesis</p>
-              <p className="text-sm font-semibold text-amber-600">67% Likely</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-400 md:text-xs">Synthesis</p>
+              <p className="text-base font-bold text-amber-600 md:text-sm md:font-semibold">67% Likely</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Authenticity Score Bar - Aligns with button on left */}
-      <div className="mt-auto flex items-center justify-between rounded-xl bg-gradient-to-br from-red-50 to-orange-50 px-6 py-4">
+      {/* Authenticity Score Bar - Touch friendly */}
+      <div className="mt-auto flex flex-col gap-3 rounded-2xl bg-gradient-to-br from-red-50 to-orange-50 p-4 md:flex-row md:items-center md:justify-between md:rounded-xl md:px-6 md:py-4 dark:from-red-900/20 dark:to-orange-900/20">
         <div className="flex items-center gap-3">
-          <AlertTriangle className="size-5 text-red-500" />
+          <div className="flex size-12 items-center justify-center rounded-xl bg-white shadow-sm md:size-auto md:rounded-none md:bg-transparent md:shadow-none dark:bg-slate-800 md:dark:bg-transparent">
+            <AlertTriangle className="size-6 text-red-500 md:size-5" />
+          </div>
           <div>
-            <span className="text-sm font-medium text-slate-800">Overall Authenticity Score</span>
-            <p className="text-xs text-slate-500">Voice Synthesis Detected</p>
+            <span className="text-sm font-semibold text-slate-800 md:font-medium dark:text-white">Authenticity Score</span>
+            <p className="text-xs font-medium text-red-500 md:font-normal md:text-slate-500">Voice Synthesis Detected</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="h-2.5 w-32 overflow-hidden rounded-full bg-white">
+        <div className="flex items-center justify-between gap-4 md:gap-3">
+          <div className="h-3 flex-1 overflow-hidden rounded-full bg-white md:h-2.5 md:w-32 md:flex-initial dark:bg-slate-800">
             <div
               className="h-full bg-gradient-to-r from-red-500 to-orange-500"
               style={{ width: "34%" }}
             />
           </div>
-          <span className="text-lg font-bold text-red-600">34%</span>
+          <span className="text-2xl font-bold text-red-600 md:text-lg">34%</span>
         </div>
       </div>
     </div>

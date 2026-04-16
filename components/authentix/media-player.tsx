@@ -43,27 +43,27 @@ export function MediaPlayer() {
               </div>
             </div>
             
-            {/* Playback controls overlay */}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              <div className="flex items-center justify-center gap-4">
-                <button className="rounded-full p-2 transition-colors hover:bg-white/10">
-                  <SkipBack className="size-4 text-white/70" />
+            {/* Playback controls overlay - Touch friendly */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
+              <div className="flex items-center justify-center gap-2 md:gap-4">
+                <button className="flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:size-10 md:hover:bg-white/10">
+                  <SkipBack className="size-5 text-white/70 md:size-4" />
                 </button>
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="rounded-full bg-white/20 p-3 backdrop-blur-sm transition-transform hover:scale-105"
+                  className="flex size-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all active:scale-95 md:size-12 md:hover:scale-105"
                 >
                   {isPlaying ? (
-                    <Pause className="size-5 text-white" />
+                    <Pause className="size-6 text-white md:size-5" />
                   ) : (
-                    <Play className="size-5 text-white" />
+                    <Play className="ml-0.5 size-6 text-white md:size-5" />
                   )}
                 </button>
-                <button className="rounded-full p-2 transition-colors hover:bg-white/10">
-                  <SkipForward className="size-4 text-white/70" />
+                <button className="flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:size-10 md:hover:bg-white/10">
+                  <SkipForward className="size-5 text-white/70 md:size-4" />
                 </button>
-                <button className="ml-4 rounded-full p-2 transition-colors hover:bg-white/10">
-                  <Volume2 className="size-4 text-white/70" />
+                <button className="ml-2 flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:ml-4 md:size-10 md:hover:bg-white/10">
+                  <Volume2 className="size-5 text-white/70 md:size-4" />
                 </button>
               </div>
             </div>
