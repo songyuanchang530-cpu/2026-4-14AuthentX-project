@@ -5,6 +5,9 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useTheme } from "./theme-provider"
+import { useDeviceType } from "@/hooks/use-mobile"
+import { MobileHeader } from "./mobile-header"
+import { MobileBottomNav } from "./mobile-bottom-nav"
 import {
   Home,
   Image,
@@ -50,13 +53,26 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
   const { theme, toggleTheme } = useTheme()
   const router = useRouter()
   const pathname = usePathname()
+  const deviceType = useDeviceType()
+
+  const isMobile = deviceType === 'mobile'
+  const isTablet = deviceType === 'tablet'
+  const isDesktop = deviceType === 'desktop'
 
   const isAIAssistantActive = pathname === AI_ASSISTANT_PATH
+
+  // Auto-collapse sidebar on tablet
+  useEffect(() => {
+    if (isTablet) {
+      setSidebarOpen(false)
+    } else if (isDesktop) {
+      setSidebarOpen(true)
+    }
+  }, [isTablet, isDesktop])
 
   // Save the current view when navigating away from AI Assistant
   useEffect(() => {
     if (!isAIAssistantActive && pathname) {
-      // Only save non-AI-assistant paths
       localStorage.setItem(PREVIOUS_VIEW_KEY, pathname)
     }
   }, [pathname, isAIAssistantActive])
@@ -64,23 +80,41 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
   // Toggle handler with memory
   const handleAIToggle = useCallback(() => {
     if (isAIAssistantActive) {
-      // Currently on AI Assistant, go back to previous view
       const previousView = localStorage.getItem(PREVIOUS_VIEW_KEY) || DEFAULT_VIEW
       router.push(previousView)
     } else {
-      // Not on AI Assistant, save current view and go to AI Assistant
       localStorage.setItem(PREVIOUS_VIEW_KEY, pathname || DEFAULT_VIEW)
       router.push(AI_ASSISTANT_PATH)
     }
   }, [isAIAssistantActive, pathname, router])
 
+  // Mobile Layout
+  if (isMobile) {
+    return (
+      <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
+        {/* Mobile Header */}
+        <MobileHeader pageTitle={pageTitle} activeItem={activeItem} />
+
+        {/* Page Content with safe area padding */}
+        <main className="flex flex-1 flex-col px-4 pb-20 pt-4">
+          {children}
+        </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav activeItem={activeItem} />
+      </div>
+    )
+  }
+
+  // Tablet & Desktop Layout
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Sidebar */}
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-slate-200/60 bg-white/90 backdrop-blur-md transition-all duration-300 dark:border-slate-700/40 dark:bg-[#0f0f1a]/90",
-          sidebarOpen ? "w-64" : "w-0 overflow-hidden"
+          sidebarOpen ? "w-64" : "w-0 overflow-hidden",
+          isTablet && !sidebarOpen && "w-0"
         )}
         translate="no"
       >
@@ -180,7 +214,7 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
         )}
       >
         {/* Sticky Header */}
-        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200/60 bg-white/80 px-8 pb-4 pt-6 backdrop-blur-xl dark:border-slate-700/40 dark:bg-[#0f0f1a]/80">
+        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 pb-4 pt-6 backdrop-blur-xl md:px-8 dark:border-slate-700/40 dark:bg-[#0f0f1a]/80">
           <div className="flex items-center gap-4">
             {/* Sidebar Toggle (when collapsed) */}
             {!sidebarOpen && (
@@ -193,18 +227,18 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
               </button>
             )}
             {/* Page Title */}
-            <h1 className="bg-gradient-to-r from-[#0082FD] to-[#A459B5] bg-clip-text text-2xl font-semibold tracking-tight text-transparent">
+            <h1 className="bg-gradient-to-r from-[#0082FD] to-[#A459B5] bg-clip-text text-lg font-semibold tracking-tight text-transparent md:text-2xl">
               {pageTitle}
             </h1>
           </div>
 
           {/* Right Utilities */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {/* AI Assistant Toggle Button */}
             <button
               onClick={handleAIToggle}
               className={cn(
-                "relative flex cursor-pointer items-center gap-2 overflow-visible rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ease-out active:scale-95",
+                "relative flex cursor-pointer items-center gap-2 overflow-visible rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out active:scale-95 md:px-4",
                 isAIAssistantActive
                   ? "bg-gradient-to-r from-[#0082FD] to-[#A459B5] text-white shadow-md shadow-purple-500/20"
                   : "bg-slate-100 text-slate-500 shadow-none hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
@@ -217,13 +251,13 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full border border-white bg-green-500 dark:border-slate-900"></span>
               </span>
               <Sparkles className="size-4" />
-              AI 助手
+              <span className="hidden sm:inline">AI 助手</span>
             </button>
 
-            {/* Language Selector */}
+            {/* Language Selector - Hidden on small tablets */}
             <button
               onClick={() => setLang(lang === "en" ? "zh" : "en")}
-              className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-xs text-slate-600 transition-colors hover:bg-slate-200 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-700"
+              className="hidden items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-xs text-slate-600 transition-colors hover:bg-slate-200 md:flex dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-700"
             >
               <Globe className="size-3.5" />
               <span className={lang === "en" ? "text-slate-800 font-medium dark:text-white" : "text-slate-400"}>EN</span>
@@ -280,7 +314,7 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
         </header>
 
         {/* Page Content */}
-        <div className="relative flex min-h-[calc(100vh-100px)] flex-1 flex-col px-8 pb-8 pt-6">
+        <div className="relative flex min-h-[calc(100vh-100px)] flex-1 flex-col px-4 pb-8 pt-6 md:px-8">
           {children}
         </div>
       </main>

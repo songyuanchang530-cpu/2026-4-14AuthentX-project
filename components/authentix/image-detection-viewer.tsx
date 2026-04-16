@@ -41,9 +41,9 @@ export function ImageDetectionViewer() {
   const [selectedBox, setSelectedBox] = useState<string | null>("face-1")
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      {/* Image Preview Card - Fixed height to match Upload zone on left */}
-      <div className="relative h-[280px] overflow-hidden rounded-3xl bg-white p-2 shadow-xl shadow-indigo-100/50">
+    <div className="flex h-full flex-col gap-4 md:gap-6">
+      {/* Image Preview Card - Responsive height */}
+      <div className="relative h-[200px] overflow-hidden rounded-2xl bg-white p-2 shadow-lg shadow-indigo-100/50 md:h-[280px] md:rounded-3xl md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
         <div className="relative h-full w-full overflow-hidden rounded-2xl bg-slate-100">
           {/* Placeholder Image - News Broadcast Scene */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200">
@@ -141,40 +141,40 @@ export function ImageDetectionViewer() {
         </div>
       </div>
 
-      {/* AI Insights & Face Detection Card - Matches Analysis Options on left */}
-      <div className="rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50">
-        <div className="mb-4 flex items-center justify-between">
+      {/* AI Insights & Face Detection Card */}
+      <div className="rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 md:rounded-3xl md:p-6 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
+        <div className="mb-3 flex items-center justify-between md:mb-4">
           <h4 className="text-xs font-medium uppercase tracking-wider text-slate-500">
-            AI Insights & Face Detection
+            AI Insights
           </h4>
           <div className="flex items-center gap-1.5">
             <Cpu className="size-3 text-indigo-400" />
-            <span className="text-[10px] text-slate-400">Vision-Pro Engine</span>
+            <span className="text-[10px] text-slate-400">Vision-Pro</span>
           </div>
         </div>
 
-        {/* Face Detection Results */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Face Detection Results - Touch friendly */}
+        <div className="grid grid-cols-2 gap-2 md:gap-4">
           {mockBoundingBoxes.map((box) => (
             <button
               key={box.id}
               onClick={() => setSelectedBox(box.id)}
-              className={`rounded-xl p-4 text-left transition-all ${
+              className={`rounded-xl p-3 text-left transition-all active:scale-[0.98] md:p-4 ${
                 selectedBox === box.id
                   ? box.isFake
-                    ? "bg-red-50 ring-2 ring-red-200"
-                    : "bg-blue-50 ring-2 ring-blue-200"
-                  : "bg-slate-50 hover:bg-slate-100"
+                    ? "bg-red-50 ring-2 ring-red-200 dark:bg-red-900/20 dark:ring-red-800"
+                    : "bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-900/20 dark:ring-blue-800"
+                  : "bg-slate-50 active:bg-slate-100 md:hover:bg-slate-100 dark:bg-slate-800/50 dark:active:bg-slate-700"
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`flex size-8 items-center justify-center rounded-lg ${
-                    box.isFake ? "bg-red-100" : "bg-blue-100"
+                  <div className={`flex size-7 items-center justify-center rounded-lg md:size-8 ${
+                    box.isFake ? "bg-red-100 dark:bg-red-900/30" : "bg-blue-100 dark:bg-blue-900/30"
                   }`}>
-                    <User className={`size-4 ${box.isFake ? "text-red-500" : "text-blue-500"}`} />
+                    <User className={`size-3.5 md:size-4 ${box.isFake ? "text-red-500" : "text-blue-500"}`} />
                   </div>
-                  <span className="font-medium text-slate-800">{box.label}</span>
+                  <span className="text-sm font-medium text-slate-800 dark:text-white">{box.label}</span>
                 </div>
                 {box.isFake ? (
                   <AlertTriangle className="size-4 text-red-500" />
@@ -183,12 +183,12 @@ export function ImageDetectionViewer() {
                 )}
               </div>
               
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-slate-500">
+              <div className="mt-2 flex items-center justify-between md:mt-3">
+                <span className="text-[10px] text-slate-500 md:text-xs">
                   {box.isFake ? "Manipulated" : "Authentic"}
                 </span>
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-200">
+                <div className="flex items-center gap-1.5 md:gap-2">
+                  <div className="h-1.5 w-12 overflow-hidden rounded-full bg-slate-200 md:w-16 dark:bg-slate-700">
                     <div
                       className={`h-full rounded-full ${
                         box.isFake
@@ -198,52 +198,52 @@ export function ImageDetectionViewer() {
                       style={{ width: `${box.confidence}%` }}
                     />
                   </div>
-                  <span className="text-xs font-medium text-slate-600">{box.confidence}%</span>
+                  <span className="text-[10px] font-medium text-slate-600 md:text-xs dark:text-slate-400">{box.confidence}%</span>
                 </div>
               </div>
             </button>
           ))}
         </div>
 
-        {/* Quick Stats */}
-        <div className="mt-4 flex items-center justify-around border-t border-slate-100 pt-4">
+        {/* Quick Stats - Responsive */}
+        <div className="mt-3 flex items-center justify-around border-t border-slate-100 pt-3 md:mt-4 md:pt-4 dark:border-slate-700">
           <div className="text-center">
-            <p className="text-xs text-slate-400">Resolution</p>
-            <p className="text-sm font-semibold text-slate-700">1080p HD</p>
+            <p className="text-[10px] text-slate-400 md:text-xs">Resolution</p>
+            <p className="text-xs font-semibold text-slate-700 md:text-sm dark:text-slate-300">1080p</p>
           </div>
-          <div className="h-8 w-px bg-slate-100" />
+          <div className="h-6 w-px bg-slate-100 md:h-8 dark:bg-slate-700" />
           <div className="text-center">
-            <p className="text-xs text-slate-400">Artifacts</p>
-            <p className="text-sm font-semibold text-amber-600">2 Flagged</p>
+            <p className="text-[10px] text-slate-400 md:text-xs">Artifacts</p>
+            <p className="text-xs font-semibold text-amber-600 md:text-sm">2</p>
           </div>
-          <div className="h-8 w-px bg-slate-100" />
+          <div className="h-6 w-px bg-slate-100 md:h-8 dark:bg-slate-700" />
           <div className="text-center">
-            <p className="text-xs text-slate-400">Detection</p>
-            <p className="text-sm font-semibold text-red-600">Face Swap</p>
+            <p className="text-[10px] text-slate-400 md:text-xs">Type</p>
+            <p className="text-xs font-semibold text-red-600 md:text-sm">Face Swap</p>
           </div>
         </div>
       </div>
 
-      {/* Authenticity Score Bar - Aligns with button on left */}
-      <div className="mt-auto flex items-center justify-between rounded-xl bg-gradient-to-br from-red-50 to-orange-50 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-sm">
-            <Scan className="size-5 text-red-500" />
+      {/* Authenticity Score Bar - Touch friendly */}
+      <div className="mt-auto flex items-center justify-between rounded-xl bg-gradient-to-br from-red-50 to-orange-50 px-4 py-3 md:px-6 md:py-4 dark:from-red-900/20 dark:to-orange-900/20">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm md:size-10 dark:bg-slate-800">
+            <Scan className="size-4 text-red-500 md:size-5" />
           </div>
           <div>
-            <span className="text-sm font-medium text-slate-800">Overall Authenticity Score</span>
-            <p className="text-xs text-slate-500">Face Swap Detected</p>
+            <span className="text-xs font-medium text-slate-800 md:text-sm dark:text-white">Authenticity Score</span>
+            <p className="text-[10px] text-slate-500 md:text-xs">Face Swap Detected</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="h-2.5 w-32 overflow-hidden rounded-full bg-white">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="hidden h-2.5 w-24 overflow-hidden rounded-full bg-white md:block md:w-32 dark:bg-slate-800">
             <div
               className="h-full bg-gradient-to-r from-red-500 to-orange-500"
               style={{ width: "14%" }}
             />
           </div>
-          <span className="text-lg font-bold text-red-600">14%</span>
+          <span className="text-base font-bold text-red-600 md:text-lg">14%</span>
         </div>
       </div>
     </div>

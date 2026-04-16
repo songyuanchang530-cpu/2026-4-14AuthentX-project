@@ -34,6 +34,11 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: '#f5f3ff',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -42,8 +47,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="bg-background">
+      <body className={`${inter.variable} font-sans antialiased touch-feedback`} suppressHydrationWarning>
         <ThemeProvider>
           {children}
         </ThemeProvider>

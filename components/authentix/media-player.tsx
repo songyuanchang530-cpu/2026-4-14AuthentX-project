@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react"
+import { Play, Pause, SkipBack, SkipForward, Volume2, ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const subjects = [
@@ -20,15 +20,16 @@ export function MediaPlayer() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeSubject, setActiveSubject] = useState(1)
   const [scrubberPosition, setScrubberPosition] = useState(35)
+  const [showSubjects, setShowSubjects] = useState(false)
 
   return (
-    <div className="flex h-full flex-col rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50 dark:bg-[#1a1a2e] dark:shadow-none">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-xl shadow-indigo-100/50 md:p-6 dark:bg-[#1a1a2e] dark:shadow-none">
+      <div className="mb-3 flex items-center justify-between md:mb-4">
         <h3 className="text-sm font-semibold text-slate-800 dark:text-white">Media Preview</h3>
-        <span className="text-xs text-slate-400">VIDEO_SAMPLE_001.mp4</span>
+        <span className="max-w-[120px] truncate text-xs text-slate-400 md:max-w-none">VIDEO_SAMPLE_001.mp4</span>
       </div>
 
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 lg:flex-row">
         {/* Video Player Area */}
         <div className="flex flex-1 flex-col">
           {/* Video placeholder */}
@@ -128,21 +129,39 @@ export function MediaPlayer() {
           </div>
         </div>
 
-        {/* Subjects panel */}
-        <div className="w-36">
-          <h4 className="mb-3 text-xs uppercase tracking-wider text-slate-400">
-            Subjects
-          </h4>
-          <div className="flex flex-col gap-2">
+        {/* Subjects panel - Collapsible on mobile */}
+        <div className="lg:w-36">
+          {/* Mobile: Collapsible header */}
+          <button
+            onClick={() => setShowSubjects(!showSubjects)}
+            className="mb-3 flex w-full items-center justify-between lg:pointer-events-none"
+          >
+            <h4 className="text-xs uppercase tracking-wider text-slate-400">
+              Subjects
+            </h4>
+            <div className="lg:hidden">
+              {showSubjects ? (
+                <ChevronUp className="size-4 text-slate-400" />
+              ) : (
+                <ChevronDown className="size-4 text-slate-400" />
+              )}
+            </div>
+          </button>
+          
+          {/* Mobile: Grid layout when expanded, Desktop: Always visible column */}
+          <div className={cn(
+            "grid grid-cols-2 gap-2 lg:flex lg:flex-col",
+            !showSubjects && "hidden lg:flex"
+          )}>
             {subjects.map((subject) => (
               <button
                 key={subject.id}
                 onClick={() => setActiveSubject(subject.id)}
                 className={cn(
-                  "flex items-center gap-2 rounded-xl px-3 py-2 text-left transition-all",
+                  "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left transition-all active:scale-[0.98] lg:py-2",
                   activeSubject === subject.id
                     ? "bg-slate-100 dark:bg-zinc-800"
-                    : "hover:bg-slate-50 dark:hover:bg-zinc-800/50"
+                    : "bg-slate-50 active:bg-slate-100 lg:bg-transparent lg:hover:bg-slate-50 dark:bg-zinc-900/50 dark:active:bg-zinc-800 lg:dark:bg-transparent lg:dark:hover:bg-zinc-800/50"
                 )}
               >
                 <div
