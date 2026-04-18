@@ -8,10 +8,10 @@ interface UploadedFile {
   size: number
 }
 
-// Circular Progress Component
-function CircularProgress({ percentage }: { percentage: number }) {
-  const radius = 70
-  const strokeWidth = 12
+// Circular Progress Component - Responsive sizes
+function CircularProgress({ percentage, size = "default" }: { percentage: number; size?: "default" | "large" }) {
+  const radius = size === "large" ? 70 : 55
+  const strokeWidth = size === "large" ? 12 : 10
   const normalizedRadius = radius - strokeWidth / 2
   const circumference = normalizedRadius * 2 * Math.PI
   const strokeDashoffset = circumference - (percentage / 100) * circumference
@@ -51,7 +51,7 @@ function CircularProgress({ percentage }: { percentage: number }) {
       </svg>
       {/* Center text */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-4xl font-bold text-[#0082FD]">{percentage}%</span>
+        <span className={`font-bold text-[#0082FD] ${size === "large" ? "text-4xl" : "text-3xl"}`}>{percentage}%</span>
       </div>
     </div>
   )
@@ -137,15 +137,15 @@ export function TextAnalysisBento() {
   ]
 
   return (
-    <div className="grid flex-1 grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
+    <div className="grid flex-1 grid-cols-1 items-stretch gap-4 md:gap-8 lg:grid-cols-12">
       {/* LEFT COLUMN - Input & Action Zone */}
-      <div className="flex h-full flex-col gap-6 lg:col-span-5">
-        {/* Input Canvas - flex-1 to stretch */}
+      <div className="flex flex-col gap-4 md:gap-6 lg:col-span-5">
+        {/* Input Canvas - Touch friendly text area */}
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`relative flex flex-1 flex-col rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50 transition-all dark:bg-[#1a1a2e] dark:shadow-none ${
+          className={`relative flex min-h-[200px] flex-col rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 transition-all md:min-h-0 md:flex-1 md:rounded-3xl md:p-6 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none ${
             isDragging ? "ring-2 ring-[#0082FD]/50" : ""
           }`}
         >
@@ -153,7 +153,7 @@ export function TextAnalysisBento() {
             value={textContent}
             onChange={(e) => setTextContent(e.target.value)}
             placeholder="Paste your text here, or upload a document..."
-            className="scrollbar-hide flex-1 resize-none bg-transparent text-lg leading-relaxed text-slate-700 placeholder:text-slate-400 focus:outline-none dark:text-zinc-200 dark:placeholder:text-zinc-600"
+            className="scrollbar-hide min-h-[120px] flex-1 resize-none bg-transparent text-base leading-relaxed text-slate-700 placeholder:text-slate-400 focus:outline-none md:min-h-0 md:text-lg dark:text-zinc-200 dark:placeholder:text-zinc-600"
           />
 
           {/* Drop overlay */}
@@ -225,40 +225,47 @@ export function TextAnalysisBento() {
       </div>
 
       {/* RIGHT COLUMN - Results & Reading Zone */}
-      <div className="flex h-full flex-col gap-6 lg:col-span-7">
-        {/* Visual Scorecard - Fixed height */}
-        <div className="flex items-center gap-8 rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50 dark:bg-[#1a1a2e] dark:shadow-none">
-          {/* Circular Progress */}
-          <CircularProgress percentage={85} />
+      <div className="flex flex-col gap-4 md:gap-6 lg:col-span-7">
+        {/* Visual Scorecard - Responsive */}
+        <div className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 md:gap-8 md:rounded-3xl md:p-6 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
+          {/* Circular Progress - Different size on mobile */}
+          <div className="shrink-0">
+            <div className="md:hidden">
+              <CircularProgress percentage={85} size="default" />
+            </div>
+            <div className="hidden md:block">
+              <CircularProgress percentage={85} size="large" />
+            </div>
+          </div>
 
           {/* Score Text */}
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Likely Human-Written</h2>
-            <p className="mt-1 text-base text-slate-500">No major AI patterns detected.</p>
+            <h2 className="text-lg font-bold text-slate-800 md:text-2xl dark:text-white">Likely Human-Written</h2>
+            <p className="mt-1 text-sm text-slate-500 md:text-base">No major AI patterns detected.</p>
           </div>
         </div>
 
-        {/* Reading Viewer - flex-1 to stretch and align with left column */}
-        <div className="relative flex flex-1 flex-col rounded-3xl bg-white p-8 shadow-xl shadow-indigo-100/50 dark:bg-[#1a1a2e] dark:shadow-none">
-          {/* Legend */}
-          <div className="absolute right-6 top-6 flex items-center gap-4 rounded-full bg-slate-100 px-4 py-2 dark:bg-zinc-800/80">
-            <div className="flex items-center gap-2">
-              <div className="size-2.5 rounded-full bg-red-400" />
-              <span className="text-xs text-slate-500">AI Generated</span>
+        {/* Reading Viewer - Responsive */}
+        <div className="relative flex min-h-[300px] flex-col rounded-2xl bg-white p-4 shadow-lg shadow-indigo-100/50 md:min-h-0 md:flex-1 md:rounded-3xl md:p-8 md:shadow-xl dark:bg-[#1a1a2e] dark:shadow-none">
+          {/* Legend - Responsive */}
+          <div className="mb-4 flex items-center justify-end gap-3 md:absolute md:right-6 md:top-6 md:mb-0 md:gap-4 md:rounded-full md:bg-slate-100 md:px-4 md:py-2 md:dark:bg-zinc-800/80">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="size-2 rounded-full bg-red-400 md:size-2.5" />
+              <span className="text-[10px] text-slate-500 md:text-xs">AI</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="size-2.5 rounded-full bg-[#0082FD]" />
-              <span className="text-xs text-slate-500">Human</span>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="size-2 rounded-full bg-[#0082FD] md:size-2.5" />
+              <span className="text-[10px] text-slate-500 md:text-xs">Human</span>
             </div>
           </div>
 
-          {/* Analyzed text - scrollable within flex-1 container */}
-          <div className="scrollbar-hide mt-10 flex-1 space-y-5 overflow-y-auto pr-2 text-lg leading-loose text-slate-600 dark:text-zinc-300">
+          {/* Analyzed text - scrollable */}
+          <div className="scrollbar-hide flex-1 space-y-3 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-600 md:mt-10 md:space-y-5 md:text-lg md:leading-loose dark:text-zinc-300">
             {hasResult ? (
               analyzedSegments.map((segment, index) => (
                 <p
                   key={index}
-                  className={`rounded-2xl px-4 py-3 ${
+                  className={`rounded-xl px-3 py-2.5 md:rounded-2xl md:px-4 md:py-3 ${
                     segment.isAI
                       ? "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-100"
                       : "bg-[#0082FD]/5 text-slate-700 dark:bg-cyan-500/8 dark:text-zinc-200"

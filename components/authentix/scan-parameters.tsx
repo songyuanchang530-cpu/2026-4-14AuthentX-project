@@ -16,10 +16,10 @@ export function ScanParameters() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   return (
-    <div className="flex h-full flex-col rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50 dark:bg-[#1a1a2e] dark:shadow-none">
-      <h3 className="mb-6 text-sm font-semibold text-slate-800 dark:text-white">Scan Parameters</h3>
+    <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-xl shadow-indigo-100/50 md:p-6 dark:bg-[#1a1a2e] dark:shadow-none">
+      <h3 className="mb-4 text-sm font-semibold text-slate-800 md:mb-6 dark:text-white">Scan Parameters</h3>
 
-      <div className="flex flex-1 flex-col gap-5">
+      <div className="flex flex-1 flex-col gap-4 md:gap-5">
         {/* Scan Full File Checkbox */}
         <label className="flex cursor-pointer items-center gap-3">
           <Checkbox
@@ -136,9 +136,10 @@ export function ScanParameters() {
           </div>
         </div>
 
-        {/* Primary Action Button */}
-        <button className="mt-auto rounded-2xl bg-gradient-to-r from-[#0082FD] to-[#A459B5] px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-[#0082FD]/25 transition-transform hover:scale-[0.98] active:scale-[0.96]">
-          AUTHORIZE DETAILED FRAME ANALYSIS
+        {/* Primary Action Button - Touch friendly */}
+        <button className="mt-auto min-h-[52px] rounded-2xl bg-gradient-to-r from-[#0082FD] to-[#A459B5] px-4 py-3.5 text-xs font-semibold text-white shadow-lg shadow-[#0082FD]/25 transition-transform active:scale-[0.97] md:px-6 md:py-4 md:text-sm md:hover:scale-[0.98]">
+          <span className="hidden md:inline">AUTHORIZE DETAILED FRAME ANALYSIS</span>
+          <span className="md:hidden">START FRAME ANALYSIS</span>
         </button>
       </div>
     </div>

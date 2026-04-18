@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Play, Pause, SkipBack, SkipForward, Volume2 } from "lucide-react"
+import { Play, Pause, SkipBack, SkipForward, Volume2, ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const subjects = [
@@ -20,15 +20,16 @@ export function MediaPlayer() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeSubject, setActiveSubject] = useState(1)
   const [scrubberPosition, setScrubberPosition] = useState(35)
+  const [showSubjects, setShowSubjects] = useState(false)
 
   return (
-    <div className="flex h-full flex-col rounded-3xl bg-white p-6 shadow-xl shadow-indigo-100/50 dark:bg-[#1a1a2e] dark:shadow-none">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-xl shadow-indigo-100/50 md:p-6 dark:bg-[#1a1a2e] dark:shadow-none">
+      <div className="mb-3 flex items-center justify-between md:mb-4">
         <h3 className="text-sm font-semibold text-slate-800 dark:text-white">Media Preview</h3>
-        <span className="text-xs text-slate-400">VIDEO_SAMPLE_001.mp4</span>
+        <span className="max-w-[120px] truncate text-xs text-slate-400 md:max-w-none">VIDEO_SAMPLE_001.mp4</span>
       </div>
 
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 lg:flex-row">
         {/* Video Player Area */}
         <div className="flex flex-1 flex-col">
           {/* Video placeholder */}
@@ -42,27 +43,27 @@ export function MediaPlayer() {
               </div>
             </div>
             
-            {/* Playback controls overlay */}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              <div className="flex items-center justify-center gap-4">
-                <button className="rounded-full p-2 transition-colors hover:bg-white/10">
-                  <SkipBack className="size-4 text-white/70" />
+            {/* Playback controls overlay - Touch friendly */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 md:p-4">
+              <div className="flex items-center justify-center gap-2 md:gap-4">
+                <button className="flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:size-10 md:hover:bg-white/10">
+                  <SkipBack className="size-5 text-white/70 md:size-4" />
                 </button>
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="rounded-full bg-white/20 p-3 backdrop-blur-sm transition-transform hover:scale-105"
+                  className="flex size-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all active:scale-95 md:size-12 md:hover:scale-105"
                 >
                   {isPlaying ? (
-                    <Pause className="size-5 text-white" />
+                    <Pause className="size-6 text-white md:size-5" />
                   ) : (
-                    <Play className="size-5 text-white" />
+                    <Play className="ml-0.5 size-6 text-white md:size-5" />
                   )}
                 </button>
-                <button className="rounded-full p-2 transition-colors hover:bg-white/10">
-                  <SkipForward className="size-4 text-white/70" />
+                <button className="flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:size-10 md:hover:bg-white/10">
+                  <SkipForward className="size-5 text-white/70 md:size-4" />
                 </button>
-                <button className="ml-4 rounded-full p-2 transition-colors hover:bg-white/10">
-                  <Volume2 className="size-4 text-white/70" />
+                <button className="ml-2 flex size-12 items-center justify-center rounded-full transition-colors active:bg-white/20 md:ml-4 md:size-10 md:hover:bg-white/10">
+                  <Volume2 className="size-5 text-white/70 md:size-4" />
                 </button>
               </div>
             </div>
@@ -128,21 +129,39 @@ export function MediaPlayer() {
           </div>
         </div>
 
-        {/* Subjects panel */}
-        <div className="w-36">
-          <h4 className="mb-3 text-xs uppercase tracking-wider text-slate-400">
-            Subjects
-          </h4>
-          <div className="flex flex-col gap-2">
+        {/* Subjects panel - Collapsible on mobile */}
+        <div className="lg:w-36">
+          {/* Mobile: Collapsible header */}
+          <button
+            onClick={() => setShowSubjects(!showSubjects)}
+            className="mb-3 flex w-full items-center justify-between lg:pointer-events-none"
+          >
+            <h4 className="text-xs uppercase tracking-wider text-slate-400">
+              Subjects
+            </h4>
+            <div className="lg:hidden">
+              {showSubjects ? (
+                <ChevronUp className="size-4 text-slate-400" />
+              ) : (
+                <ChevronDown className="size-4 text-slate-400" />
+              )}
+            </div>
+          </button>
+          
+          {/* Mobile: Grid layout when expanded, Desktop: Always visible column */}
+          <div className={cn(
+            "grid grid-cols-2 gap-2 lg:flex lg:flex-col",
+            !showSubjects && "hidden lg:flex"
+          )}>
             {subjects.map((subject) => (
               <button
                 key={subject.id}
                 onClick={() => setActiveSubject(subject.id)}
                 className={cn(
-                  "flex items-center gap-2 rounded-xl px-3 py-2 text-left transition-all",
+                  "flex items-center gap-2 rounded-xl px-3 py-2.5 text-left transition-all active:scale-[0.98] lg:py-2",
                   activeSubject === subject.id
                     ? "bg-slate-100 dark:bg-zinc-800"
-                    : "hover:bg-slate-50 dark:hover:bg-zinc-800/50"
+                    : "bg-slate-50 active:bg-slate-100 lg:bg-transparent lg:hover:bg-slate-50 dark:bg-zinc-900/50 dark:active:bg-zinc-800 lg:dark:bg-transparent lg:dark:hover:bg-zinc-800/50"
                 )}
               >
                 <div

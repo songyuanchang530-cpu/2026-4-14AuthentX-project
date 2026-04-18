@@ -4,15 +4,16 @@ import { AudioDetectionViewer } from "@/components/authentix/audio-detection-vie
 
 export default function AudioDetectPage() {
   return (
-    <AppShell activeItem="audio" pageTitle="Audio Forgery Analysis">
-      <div className="grid min-h-[calc(100vh-140px)] grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Left Column - Upload & Actions */}
-        <div className="flex h-full flex-col">
+    <AppShell activeItem="audio" pageTitle="Audio Analysis">
+      {/* Responsive grid: single column on mobile, two columns on desktop */}
+      <div className="grid min-h-[calc(100vh-180px)] grid-cols-1 gap-4 md:min-h-[calc(100vh-140px)] md:gap-8 lg:grid-cols-2">
+        {/* Upload & Actions */}
+        <div className="flex flex-col">
           <AudioUpload />
         </div>
 
-        {/* Right Column - Detection Viewer */}
-        <div className="flex h-full flex-col">
+        {/* Detection Viewer */}
+        <div className="flex flex-col">
           <AudioDetectionViewer />
         </div>
       </div>
