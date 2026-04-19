@@ -21,6 +21,7 @@ import {
   Sun,
   Moon,
   PanelLeft,
+  LogOut,
 } from "lucide-react"
 
 const navItems = [
@@ -73,6 +74,13 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
       router.push(AI_ASSISTANT_PATH)
     }
   }, [isAIAssistantActive, pathname, router])
+
+  // Sign out handler - clears auth state and redirects to login
+  const handleSignOut = useCallback(() => {
+    localStorage.removeItem("authentix-auth-state")
+    // Force a full page reload to reset all state and show login screen
+    window.location.href = "/"
+  }, [])
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -155,21 +163,30 @@ export function AppShell({ children, activeItem = "video", pageTitle }: AppShell
             </div>
           </div>
 
-          {/* Account Block */}
-          <Link
-            href="/profile"
-            className="flex w-full items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/80"
-          >
-            <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#0082FD] to-[#A459B5] text-xs font-bold text-white shadow-md">
-              SY
-            </div>
-            <div className="flex flex-1 flex-col">
-              <span className="text-sm font-medium text-slate-800 dark:text-white">Song Yuanchang</span>
-              <span className="text-xs text-slate-400">Personal Account</span>
-            </div>
-            <MoreHorizontal className="size-4 text-slate-400" />
-          </Link>
-        </div>
+        {/* Account Block */}
+        <Link
+          href="/profile"
+          className="flex w-full items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/80"
+        >
+          <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#0082FD] to-[#A459B5] text-xs font-bold text-white shadow-md">
+            SY
+          </div>
+          <div className="flex flex-1 flex-col">
+            <span className="text-sm font-medium text-slate-800 dark:text-white">Song Yuanchang</span>
+            <span className="text-xs text-slate-400">Personal Account</span>
+          </div>
+          <MoreHorizontal className="size-4 text-slate-400" />
+        </Link>
+
+        {/* Sign Out Button */}
+        <button
+          onClick={handleSignOut}
+          className="mt-2 flex w-full items-center gap-3 rounded-2xl p-3 text-red-500 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+        >
+          <LogOut className="size-5" />
+          <span className="text-sm font-medium">Sign Out</span>
+        </button>
+      </div>
       </aside>
 
       {/* Main content area */}
